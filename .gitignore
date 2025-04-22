@@ -1,3 +1,4 @@
 dist/
 !.vscode/
 id_rsa_k0s*
+.envrc
