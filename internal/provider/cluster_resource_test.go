@@ -1,7 +1,6 @@
 package provider
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -16,8 +15,8 @@ func TestAccClusterResource(t *testing.T) {
 			{
 				Config: testAccClusterResourceConfig(),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("k0s_cluster.test", "id", "test-id"),
-					resource.TestCheckResourceAttr("k0s_cluster.test", "name", "test-cluster"),
+					resource.TestCheckResourceAttr("k0s_cluster.test", "id", "test"),
+					resource.TestCheckResourceAttr("k0s_cluster.test", "name", "test"),
 				),
 			},
 			// ImportState testing
@@ -44,7 +43,7 @@ func TestAccClusterResource(t *testing.T) {
 }
 
 func testAccClusterResourceConfig() string {
-	return fmt.Sprintf(`
+	return `
 resource "k0s_cluster" "test" {
   name = "test"
 	version = "1.27.2+k0s.0"
@@ -53,14 +52,14 @@ resource "k0s_cluster" "test" {
 		{
 			role = "controller+worker"
 
-      ssh = {
-        address  = "127.0.0.1"
-        port     = 22
-        user     = "root"
-        key_path = "~/.ssh/id_ed25519"
-      }
+			ssh = {
+				address  = "127.0.0.1"
+				port     = 9022
+				user     = "root"
+				key_path = "id_rsa_k0s"
+			}
 		}
 	]
 }
-`)
+`
 }

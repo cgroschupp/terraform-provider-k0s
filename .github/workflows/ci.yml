@@ -17,9 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.2.2
 
-      - uses: actions/setup-go@v5.0.0
+      - uses: actions/setup-go@v5.4.0
         with:
           go-version-file: go.mod
           cache: true
@@ -28,59 +28,57 @@ jobs:
 
       - run: go build -v .
 
-      # - name: Run linters
-      #   uses: golangci/golangci-lint-action@v3.4.0
-      #   with:
-      #     version: latest
+      - name: Run linters
+        uses: golangci/golangci-lint-action@v7.0.0
+        with:
+          version: v2.1
 
   generate:
     name: Generate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
-
-      - uses: actions/setup-go@v5.0.0
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-go@v5.4.0
         with:
           go-version-file: go.mod
           cache: true
-
+      - uses: hashicorp/setup-terraform@v3.1.2
+        with:
+          terraform_wrapper: false
       - run: go generate ./...
-
       - name: git diff
         run: |
           git diff --compact-summary --exit-code || \
             (echo; echo "Unexpected difference in directories after code generation. Run 'go generate ./...' command and commit."; exit 1)
 
-  # acceptance-tests:
-  #   name: Acceptance tests
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 15
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       terraform:
-  #         - "1.0.*"
-  #         - "1.1.*"
-  #         - "1.2.*"
-  #         - "1.3.*"
-  #         - "1.4.*"
-  #   steps:
-  #     - uses: actions/checkout@v4.1.1
+  acceptance-tests:
+    name: Acceptance tests
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        terraform:
+          - "1.10.*"
+          - "1.11.*"
+    steps:
+      - uses: actions/checkout@v4.2.2
 
-  #     - uses: actions/setup-go@v5.0.0
-  #       with:
-  #         go-version-file: go.mod
-  #         cache: true
+      - uses: actions/setup-go@v5.4.0
+        with:
+          go-version-file: go.mod
+          cache: true
 
-  #     - uses: hashicorp/setup-terraform@v2.0.3
-  #       with:
-  #         terraform_version: ${{ matrix.terraform }}
-  #         terraform_wrapper: false
+      - uses: hashicorp/setup-terraform@v3.1.2
+        with:
+          terraform_version: ${{ matrix.terraform }}
+          terraform_wrapper: false
 
-  #     - run: go mod download
+      - run: go mod download
+      - run: go install github.com/k0sproject/bootloose@latest
 
-  #     - run: go test -v -cover ./internal/provider/
-  #       env:
-  #         TF_ACC: "1"
-  #       timeout-minutes: 10
+      - run: ./smoke-test/smoke-basic.sh
+        env:
+          TF_ACC: "1"
+        timeout-minutes: 10
