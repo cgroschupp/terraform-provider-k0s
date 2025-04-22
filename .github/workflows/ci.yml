@@ -38,14 +38,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.2.2
-
       - uses: actions/setup-go@v5.4.0
         with:
           go-version-file: go.mod
           cache: true
-
+      - uses: hashicorp/setup-terraform@v3.1.2
+        with:
+          terraform_wrapper: false
       - run: go generate ./...
-
       - name: git diff
         run: |
           git diff --compact-summary --exit-code || \
@@ -73,7 +73,7 @@ jobs:
   #         go-version-file: go.mod
   #         cache: true
 
-  #     - uses: hashicorp/setup-terraform@v2.0.3
+  #     - uses: hashicorp/setup-terraform@v3.1.2
   #       with:
   #         terraform_version: ${{ matrix.terraform }}
   #         terraform_wrapper: false
