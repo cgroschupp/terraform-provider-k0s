@@ -75,6 +75,7 @@ Required:
 Optional:
 
 - `environment` (Map of String) List of key-value pairs to set to the target host's environment variables.
+- `files` (Attributes List) List of files to be uploaded to the host. (see [below for nested schema](#nestedatt--hosts--files))
 - `hostname` (String) Override host's hostname. When not set, the hostname reported by the operating system is used.
 - `install_flags` (List of String) Extra flags passed to the `k0s install` command on the target host.
 - `no_taints` (Boolean) When `true` and used in conjuction with the `controller+worker` role, the default taints are disabled making regular workloads schedulable on the node. By default, k0s sets a `node-role.kubernetes.io/master:NoSchedule` taint on `controller+worker` nodes and only workloads with toleration for it will be scheduled.
@@ -94,3 +95,19 @@ Optional:
 
 - `key_path` (String) Path to an SSH private key file.
 - `user` (String) Username to log in as.
+
+
+<a id="nestedatt--hosts--files"></a>
+### Nested Schema for `hosts.files`
+
+Required:
+
+- `dst` (String) Destination filename for the file
+- `name` (String) name of the file bundle
+- `src` (String) File path to the file to upload
+
+Optional:
+
+- `group` (String) Group name of file owner
+- `perm` (String) File permission mode for uploaded file
+- `user` (String) User name of file owner

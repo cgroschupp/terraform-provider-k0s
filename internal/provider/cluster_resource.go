@@ -46,6 +46,16 @@ type ClusterResourceModelHost struct {
 	OS               types.String                `tfsdk:"os"`
 	InstallFlags     types.List                  `tfsdk:"install_flags"`
 	Environment      types.Map                   `tfsdk:"environment"`
+	Files            []ClusterResourceModelFiles `tfsdk:"files"`
+}
+
+type ClusterResourceModelFiles struct {
+	Name            types.String `tfsdk:"name"`
+	Source          types.String `tfsdk:"src"`
+	DestinationFile types.String `tfsdk:"dst"`
+	User            types.String `tfsdk:"user"`
+	Group           types.String `tfsdk:"group"`
+	PermMode        types.String `tfsdk:"perm"`
 }
 
 type ClusterResourceModelHostSSH struct {
@@ -127,6 +137,38 @@ func (r *ClusterResource) Schema(ctx context.Context, req resource.SchemaRequest
 							MarkdownDescription: "List of key-value pairs to set to the target host's environment variables.",
 							Optional:            true,
 							ElementType:         types.StringType,
+						},
+						"files": schema.ListNestedAttribute{
+							Optional:            true,
+							MarkdownDescription: "List of files to be uploaded to the host.",
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"name": schema.StringAttribute{
+										MarkdownDescription: "name of the file bundle",
+										Required:            true,
+									},
+									"src": schema.StringAttribute{
+										MarkdownDescription: "File path to the file to upload",
+										Required:            true,
+									},
+									"dst": schema.StringAttribute{
+										MarkdownDescription: "Destination filename for the file",
+										Required:            true,
+									},
+									"user": schema.StringAttribute{
+										MarkdownDescription: "User name of file owner",
+										Optional:            true,
+									},
+									"group": schema.StringAttribute{
+										MarkdownDescription: "Group name of file owner",
+										Optional:            true,
+									},
+									"perm": schema.StringAttribute{
+										Optional:            true,
+										MarkdownDescription: "File permission mode for uploaded file",
+									},
+								},
+							},
 						},
 						"ssh": schema.SingleNestedAttribute{
 							MarkdownDescription: "SSH connection options.",
@@ -384,7 +426,7 @@ func getK0sctlManagerForCreateOrUpdate(data *ClusterResourceModel, k0sctlConfig 
 		},
 		&k0sctl_phase.RunHooks{Stage: "after", Action: "apply"},
 		&k0sctl_phase.ApplyManifests{},
-		&k0sctl_phase.GetKubeconfig{User: "admin"},
+		&k0sctl_phase.GetKubeconfig{},
 		unlockPhase,
 		&k0sctl_phase.Disconnect{},
 	)
@@ -412,6 +454,20 @@ func getK0sctlConfig(ctx context.Context, dia *diag.Diagnostics, data *ClusterRe
 			environment = map[string]string{}
 		}
 
+		var files []*k0sctl_cluster.UploadFile
+		for _, file := range host.Files {
+			u := k0sctl_cluster.UploadFile{
+				Name:            file.Name.ValueString(),
+				DestinationFile: file.DestinationFile.ValueString(),
+				User:            file.User.ValueString(),
+				Group:           file.Group.ValueString(),
+				Source:          file.Source.ValueString(),
+				PermMode:        file.PermMode.ValueString(),
+				Sources:         []*k0sctl_cluster.LocalFile{{Path: file.Source.ValueString(), PermMode: file.PermMode.ValueString()}},
+			}
+			files = append(files, &u)
+		}
+
 		k0sctlHosts = append(k0sctlHosts, &k0sctl_cluster.Host{
 			Connection: k0s_rig.Connection{
 				SSH: &k0s_rig.SSH{
@@ -429,17 +485,20 @@ func getK0sctlConfig(ctx context.Context, dia *diag.Diagnostics, data *ClusterRe
 			OSIDOverride:     host.OS.ValueString(),
 			InstallFlags:     installFlags,
 			Environment:      environment,
+			Files:            files,
 		})
 	}
 
 	var config dig.Mapping
 	if err := yaml.Unmarshal([]byte(data.Config.ValueString()), &config); err != nil {
-		panic(err)
+		dia.AddError("unable to unmarshal config", err.Error())
+		return nil
 	}
 
 	version, err := version.NewVersion(data.Version.ValueString())
 	if err != nil {
-		panic(err)
+		dia.AddError("unable to parse version", err.Error())
+		return nil
 	}
 
 	return &k0sctl_v1beta1.Cluster{
@@ -447,6 +506,7 @@ func getK0sctlConfig(ctx context.Context, dia *diag.Diagnostics, data *ClusterRe
 		Kind:       "Cluster",
 		Metadata: &k0sctl_v1beta1.ClusterMetadata{
 			Name: data.Name.ValueString(),
+			User: fmt.Sprintf("%s-admin", data.Name.ValueString()),
 		},
 		Spec: &k0sctl_cluster.Spec{
 			Hosts: k0sctlHosts,
