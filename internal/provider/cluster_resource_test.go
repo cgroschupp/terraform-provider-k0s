@@ -1,7 +1,6 @@
 package provider
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -44,7 +43,7 @@ func TestAccClusterResource(t *testing.T) {
 }
 
 func testAccClusterResourceConfig() string {
-	return fmt.Sprintf(`
+	return `
 resource "k0s_cluster" "test" {
   name = "test"
 	version = "1.27.2+k0s.0"
@@ -62,5 +61,5 @@ resource "k0s_cluster" "test" {
 		}
 	]
 }
-`)
+`
 }

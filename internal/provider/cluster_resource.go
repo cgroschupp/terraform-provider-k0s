@@ -56,7 +56,6 @@ type ClusterResourceModelHostSSH struct {
 }
 
 type ClusterResource struct {
-	provider K0sProvider
 }
 
 func (r *ClusterResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -340,7 +339,7 @@ func (r *ClusterResource) Configure(ctx context.Context, req resource.ConfigureR
 	}
 }
 
-func getK0sctlManagerForCreateOrUpdate(data *ClusterResourceModel, k0sctlConfig *k0sctl_v1beta1.Cluster) k0sctl_phase.Manager {
+func getK0sctlManagerForCreateOrUpdate(data *ClusterResourceModel, k0sctlConfig *k0sctl_v1beta1.Cluster) *k0sctl_phase.Manager {
 	k0sctl_phase.NoWait = data.NoWait.ValueBool()
 
 	manager := k0sctl_phase.Manager{
@@ -390,7 +389,7 @@ func getK0sctlManagerForCreateOrUpdate(data *ClusterResourceModel, k0sctlConfig 
 		&k0sctl_phase.Disconnect{},
 	)
 
-	return manager
+	return &manager
 }
 
 func getK0sctlConfig(ctx context.Context, dia *diag.Diagnostics, data *ClusterResourceModel) *k0sctl_v1beta1.Cluster {
