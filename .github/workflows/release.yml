@@ -13,24 +13,24 @@ jobs:
     name: GoReleaser
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-go@v5.0.0
+      - uses: actions/setup-go@v5.4.0
         with:
           go-version-file: go.mod
           cache: true
 
       - name: Import GPG key
         id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@v6.0.0
+        uses: crazy-max/ghaction-import-gpg@v6.3.0
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5.0.0
+        uses: goreleaser/goreleaser-action@v6.3.0
         with:
           args: release --clean
         env:
