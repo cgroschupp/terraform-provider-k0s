@@ -17,7 +17,7 @@ import (
 	k0sctl_cluster "github.com/k0sproject/k0sctl/pkg/apis/k0sctl.k0sproject.io/v1beta1/cluster"
 	k0s_rig "github.com/k0sproject/rig"
 	"github.com/k0sproject/version"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 var _ resource.Resource = &ClusterResource{}
