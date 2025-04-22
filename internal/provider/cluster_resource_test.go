@@ -15,8 +15,8 @@ func TestAccClusterResource(t *testing.T) {
 			{
 				Config: testAccClusterResourceConfig(),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("k0s_cluster.test", "id", "test-id"),
-					resource.TestCheckResourceAttr("k0s_cluster.test", "name", "test-cluster"),
+					resource.TestCheckResourceAttr("k0s_cluster.test", "id", "test"),
+					resource.TestCheckResourceAttr("k0s_cluster.test", "name", "test"),
 				),
 			},
 			// ImportState testing
@@ -52,12 +52,12 @@ resource "k0s_cluster" "test" {
 		{
 			role = "controller+worker"
 
-      ssh = {
-        address  = "127.0.0.1"
-        port     = 22
-        user     = "root"
-        key_path = "~/.ssh/id_ed25519"
-      }
+			ssh = {
+				address  = "127.0.0.1"
+				port     = 9022
+				user     = "root"
+				key_path = "id_rsa_k0s"
+			}
 		}
 	]
 }
