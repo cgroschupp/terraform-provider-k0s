@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/terraform-plugin-go v0.26.0
 	github.com/hashicorp/terraform-plugin-testing v1.12.0
 	github.com/k0sproject/dig v0.4.0
-	github.com/k0sproject/k0sctl v0.23.1-0.20250417131734-2de1e28343e5
+	github.com/k0sproject/k0sctl v0.23.1-0.20250424060328-597b740e653f
 	github.com/k0sproject/rig v0.20.0
 	github.com/k0sproject/version v0.7.0
 	gopkg.in/yaml.v2 v2.4.0
