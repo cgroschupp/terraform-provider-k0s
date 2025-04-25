@@ -10,13 +10,13 @@ export K0S_VERSION
 
 createCluster() {
   envsubst < "${SCRIPT_DIR}/${BOOTLOOSE_TEMPLATE}" > bootloose.yaml
-  bootloose create
+  go tool github.com/k0sproject/bootloose create
 }
 
 deleteCluster() {
   # cleanup any existing cluster
   envsubst < "${SCRIPT_DIR}/${BOOTLOOSE_TEMPLATE}" > bootloose.yaml
-  bootloose delete && docker volume prune -f
+  go tool github.com/k0sproject/bootloose delete && docker volume prune -f
 }
 
 
