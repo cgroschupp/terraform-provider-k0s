@@ -1,6 +1,6 @@
 module github.com/alessiodionisi/terraform-provider-k0s
 
-go 1.24
+go 1.24.0
 
 toolchain go1.24.2
 
@@ -9,7 +9,7 @@ require (
 	github.com/hashicorp/terraform-plugin-go v0.26.0
 	github.com/hashicorp/terraform-plugin-testing v1.12.0
 	github.com/k0sproject/dig v0.4.0
-	github.com/k0sproject/k0sctl v0.23.1-0.20250424060328-597b740e653f
+	github.com/k0sproject/k0sctl v0.23.1-0.20250430112949-57ef33264778
 	github.com/k0sproject/rig v0.20.0
 	github.com/k0sproject/version v0.7.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -145,14 +145,15 @@ require (
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241015192408-796eee8c2d53 // indirect
 	google.golang.org/grpc v1.69.4 // indirect
-	google.golang.org/protobuf v1.36.3 // indirect
+	google.golang.org/protobuf v1.36.5 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	k8s.io/apimachinery v0.32.3 // indirect
-	k8s.io/client-go v0.32.3 // indirect
+	k8s.io/apimachinery v0.33.0 // indirect
+	k8s.io/client-go v0.33.0 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/utils v0.0.0-20250321185631-1f6e0b77f77e // indirect
 	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8 // indirect
+	sigs.k8s.io/randfill v1.0.0 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.7.0 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
