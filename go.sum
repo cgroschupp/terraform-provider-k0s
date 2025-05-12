@@ -234,6 +234,8 @@ github.com/k0sproject/k0sctl v0.23.1-0.20250430112949-57ef33264778 h1:/LAuaYcb15
 github.com/k0sproject/k0sctl v0.23.1-0.20250430112949-57ef33264778/go.mod h1:uQ3Vc7hqz99DZIX68ln2LTQu16TOx/G3lnxZYuzVxPo=
 github.com/k0sproject/k0sctl v0.23.1-0.20250508120956-439da7c3de4d h1:uezKDl9X3Q8EbzP+VB7mqzSruPjYaSqyQ58FORaXiBY=
 github.com/k0sproject/k0sctl v0.23.1-0.20250508120956-439da7c3de4d/go.mod h1:frvp2BTimRY3W0D1FfwFPpvZEcqdjI9HRLMICj4eMCY=
+github.com/k0sproject/k0sctl v0.23.1-0.20250512092703-0e36086f4b8c h1:M5A5HCvNJuwo/eTX+dKJh+Y0CZWGdj1B6DBD+aGZI2s=
+github.com/k0sproject/k0sctl v0.23.1-0.20250512092703-0e36086f4b8c/go.mod h1:frvp2BTimRY3W0D1FfwFPpvZEcqdjI9HRLMICj4eMCY=
 github.com/k0sproject/rig v0.20.0 h1:HJQPyB/5hnHyTOgX7Hpz8dgGIc04BAQOsZ2ZrB9bpgY=
 github.com/k0sproject/rig v0.20.0/go.mod h1:XUZa4te/D/lbQfDyiRbLAYyDY06YbGDSgXzOnhJwWf0=
 github.com/k0sproject/version v0.7.0 h1:pWp60UaA7N9g/wKUz1HN6heFW1M6ioWHEo8glHYlq00=
