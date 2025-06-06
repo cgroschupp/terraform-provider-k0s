@@ -2,7 +2,7 @@ module github.com/alessiodionisi/terraform-provider-k0s
 
 go 1.24.0
 
-toolchain go1.24.3
+toolchain go1.24.4
 
 require (
 	github.com/hashicorp/terraform-plugin-framework v1.14.1
