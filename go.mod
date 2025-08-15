@@ -7,7 +7,7 @@ toolchain go1.24.6
 require (
 	github.com/hashicorp/terraform-plugin-framework v1.15.1
 	github.com/hashicorp/terraform-plugin-go v0.28.0
-	github.com/hashicorp/terraform-plugin-testing v1.13.2
+	github.com/hashicorp/terraform-plugin-testing v1.13.3
 	github.com/k0sproject/dig v0.4.0
 	github.com/k0sproject/k0sctl v0.25.1
 	github.com/k0sproject/rig v0.21.0
