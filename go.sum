@@ -270,6 +270,8 @@ github.com/k0sproject/rig v0.21.0 h1:BV3hVDZiH1at3F4QIkDFVpu0F7RajLo/yScNcYygALA
 github.com/k0sproject/rig v0.21.0/go.mod h1:CwxhnGDFDE1pQtaN41XUvoLMCnXWSnQoXT2n4kDE9lA=
 github.com/k0sproject/version v0.7.0 h1:pWp60UaA7N9g/wKUz1HN6heFW1M6ioWHEo8glHYlq00=
 github.com/k0sproject/version v0.7.0/go.mod h1:iNV3O8blndsQhxZ8zACfpQhrLDlrTvDlCzx+vgCFtSI=
+github.com/k0sproject/version v0.8.0 h1:Yh1SFDeBqQ7etrGwffY8bWKdbAUjeBOhiZ6oQuuz4sM=
+github.com/k0sproject/version v0.8.0/go.mod h1:iNV3O8blndsQhxZ8zACfpQhrLDlrTvDlCzx+vgCFtSI=
 github.com/kevinburke/ssh_config v1.2.0 h1:x584FjTGwHzMwvHx18PXxbBVzfnxogHaAReU4gf13a4=
 github.com/kevinburke/ssh_config v1.2.0/go.mod h1:CT57kijsi8u/K/BOFA39wgDQJ9CxiF4nAY/ojJ6r6mM=
 github.com/kisielk/errcheck v1.5.0/go.mod h1:pFxgyoBC7bSaBwPgfKdkLd5X25qrDl4LWUI2bnpBCr8=
