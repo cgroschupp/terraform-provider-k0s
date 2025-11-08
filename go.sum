@@ -47,6 +47,8 @@ github.com/bufbuild/protocompile v0.14.1 h1:iA73zAf/fyljNjQKwYzUHD6AD4R8KMasmwa/
 github.com/bufbuild/protocompile v0.14.1/go.mod h1:ppVdAIhbr2H8asPk6k4pY7t9zB1OU5DoEw9xY/FUi1c=
 github.com/carlmjohnson/versioninfo v0.22.5 h1:O00sjOLUAFxYQjlN/bzYTuZiS0y6fWDQjMRvwtKgwwc=
 github.com/carlmjohnson/versioninfo v0.22.5/go.mod h1:QT9mph3wcVfISUKd0i9sZfVrPviHuSF+cUtLjm2WSf8=
+github.com/cgroschupp/rig v0.0.0-20250514104132-2ad321cb719a h1:sAb1vflj6yS6se8BSQ6jRmE5D3eFK2028pHZ8ypHTi8=
+github.com/cgroschupp/rig v0.0.0-20250514104132-2ad321cb719a/go.mod h1:XUZa4te/D/lbQfDyiRbLAYyDY06YbGDSgXzOnhJwWf0=
 github.com/cloudflare/circl v1.6.1 h1:zqIqSPIndyBh1bjLVVDHMPpVKqp8Su/V+6MeDzzQBQ0=
 github.com/cloudflare/circl v1.6.1/go.mod h1:uddAzsPgqdMAYatqJ0lsjX1oECcQLIlRpzZh3pJrofs=
 github.com/cpuguy83/go-md2man/v2 v2.0.6/go.mod h1:oOW0eioCTA6cOiMLiUPZOpcVxMig6NIQQ7OS05n1F4g=
@@ -223,8 +225,6 @@ github.com/k0sproject/dig v0.4.0 h1:yBxFUUxNXAMGBg6b7c6ypxdx/o3RmhoI5v5ABOw5tn0=
 github.com/k0sproject/dig v0.4.0/go.mod h1:rlZ7N7ZEcB4Fi96TPXkZ4dqyAiDWOGLapyL9YpZ7Qz4=
 github.com/k0sproject/k0sctl v0.27.0 h1:S1dfb5ZYmRbNFJGa7eAgdBcK5I2wt7msLD+pKtRr7TQ=
 github.com/k0sproject/k0sctl v0.27.0/go.mod h1:1ak/sj36op7hQApTQ603EkhRD9ajhIhSG102maXlTFI=
-github.com/k0sproject/rig v0.21.0 h1:BV3hVDZiH1at3F4QIkDFVpu0F7RajLo/yScNcYygALA=
-github.com/k0sproject/rig v0.21.0/go.mod h1:CwxhnGDFDE1pQtaN41XUvoLMCnXWSnQoXT2n4kDE9lA=
 github.com/k0sproject/version v0.8.0 h1:Yh1SFDeBqQ7etrGwffY8bWKdbAUjeBOhiZ6oQuuz4sM=
 github.com/k0sproject/version v0.8.0/go.mod h1:iNV3O8blndsQhxZ8zACfpQhrLDlrTvDlCzx+vgCFtSI=
 github.com/kevinburke/ssh_config v1.2.0 h1:x584FjTGwHzMwvHx18PXxbBVzfnxogHaAReU4gf13a4=

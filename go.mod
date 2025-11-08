@@ -157,3 +157,5 @@ tool (
 	github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 	github.com/k0sproject/bootloose
 )
+
+replace github.com/k0sproject/rig => github.com/cgroschupp/rig v0.0.0-20250514104132-2ad321cb719a
