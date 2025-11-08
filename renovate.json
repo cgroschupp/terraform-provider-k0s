@@ -3,5 +3,15 @@
   "extends": [
     "config:recommended"
   ],
-  "postUpdateOptions": ["gomodTidy"]
+  "postUpdateOptions": ["gomodTidy"],
+  "customManagers": [
+    {
+      "customType": "jsonata",
+      "fileFormat": "yaml",
+      "managerFilePatterns": ["/^\\.github\\/workflows\\/ci\\.yml$/"],
+      "matchStrings": [
+        "*.jobs.*.steps[$contains(uses,'golangci/golangci-lint-action') and with.version].{ \"depName\": \"golangci/golangci-lint\", \"currentValue\": $replace(with.version,/^v/,\"\"), \"datasource\": \"github-releases\", \"versioning\": \"semver\" }"
+      ]
+    }
+  ]
 }
