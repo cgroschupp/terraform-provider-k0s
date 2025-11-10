@@ -6,12 +6,14 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/k0sproject/dig"
 	k0sctl_phase "github.com/k0sproject/k0sctl/phase"
@@ -66,6 +68,7 @@ type ClusterResourceModelHostSSH struct {
 	User    types.String `tfsdk:"user"`
 	Port    types.Int64  `tfsdk:"port"`
 	KeyPath types.String `tfsdk:"key_path"`
+	Key     types.String `tfsdk:"key"`
 }
 
 type ClusterResource struct {
@@ -199,6 +202,21 @@ func (r *ClusterResource) Schema(ctx context.Context, req resource.SchemaRequest
 								"key_path": schema.StringAttribute{
 									MarkdownDescription: "Path to an SSH private key file.",
 									Optional:            true,
+									Validators: []validator.String{
+										stringvalidator.ConflictsWith(path.Expressions{
+											path.MatchRelative().AtParent().AtName("key"),
+										}...),
+									},
+								},
+								"key": schema.StringAttribute{
+									MarkdownDescription: "SSH private key in PEM format.",
+									Optional:            true,
+									Sensitive:           true,
+									Validators: []validator.String{
+										stringvalidator.ConflictsWith(path.Expressions{
+											path.MatchRelative().AtParent().AtName("key_path"),
+										}...),
+									},
 								},
 							},
 						},
@@ -505,14 +523,23 @@ func getK0sctlConfig(ctx context.Context, dia *diag.Diagnostics, data *ClusterRe
 			files = append(files, &u)
 		}
 
+		ssh := k0s_rig.SSH{
+			Address: host.SSH.Address.ValueString(),
+			Port:    int(host.SSH.Port.ValueInt64()),
+			User:    host.SSH.User.ValueString(),
+			KeyPath: host.SSH.KeyPath.ValueStringPointer(),
+		}
+		if !host.SSH.Key.IsNull() {
+			authMethods, err := k0s_rig.ParseSSHPrivateKey([]byte(host.SSH.Key.ValueString()), nil)
+			if err != nil {
+				dia.AddError("unable to parse ssh key", err.Error())
+				return nil
+			}
+			ssh.AuthMethods = authMethods
+		}
 		k0sctlHosts = append(k0sctlHosts, &k0sctl_cluster.Host{
 			Connection: k0s_rig.Connection{
-				SSH: &k0s_rig.SSH{
-					Address: host.SSH.Address.ValueString(),
-					Port:    int(host.SSH.Port.ValueInt64()),
-					User:    host.SSH.User.ValueString(),
-					KeyPath: host.SSH.KeyPath.ValueStringPointer(),
-				},
+				SSH: &ssh,
 			},
 			Role:             host.Role.ValueString(),
 			NoTaints:         host.NoTaints.ValueBool(),
