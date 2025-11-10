@@ -94,6 +94,7 @@ Required:
 
 Optional:
 
+- `key` (String, Sensitive) SSH private key in PEM format.
 - `key_path` (String) Path to an SSH private key file.
 - `user` (String) Username to log in as.
 
