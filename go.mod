@@ -159,4 +159,4 @@ tool (
 	github.com/k0sproject/bootloose
 )
 
-replace github.com/k0sproject/rig => github.com/cgroschupp/rig v0.0.0-20250514104132-2ad321cb719a
+replace github.com/k0sproject/rig => github.com/cgroschupp/rig b8e3aae84cf9
