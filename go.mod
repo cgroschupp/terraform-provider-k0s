@@ -1,4 +1,4 @@
-module github.com/alessiodionisi/terraform-provider-k0s
+module github.com/cgroschupp/terraform-provider-k0s
 
 go 1.26
 

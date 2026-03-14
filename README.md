@@ -1,12 +1,12 @@
 # Terraform provider for k0s (using embedded k0sctl)
 
-> ⚠️ The provider name on Terraform registry has been renamed from `adnsio/k0s` to `alessiodionisi/k0s`, please update your `required_providers` block.
+> ⚠️ The provider name on Terraform registry has been renamed from `alessiodionisi/k0s` to `cgroschupp/k0s`, please update your `required_providers` block.
 
 Terraform provider to create and manage [k0s](https://k0sproject.io) Kubernetes clusters, using embedded [k0sctl](https://github.com/k0sproject/k0sctl).
 
 ## Getting started
 
-You can install stable releases of the provider from the [Terrafom registry](https://registry.terraform.io/providers/alessiodionisi/k0s/latest).
+You can install stable releases of the provider from the [Terrafom registry](https://registry.terraform.io/providers/cgroschupp/k0s/latest).
 
 ## Contributing
 
