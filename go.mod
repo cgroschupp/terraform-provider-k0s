@@ -12,7 +12,7 @@ require (
 	github.com/hashicorp/terraform-plugin-testing v1.16.0
 	github.com/k0sproject/dig v0.4.0
 	github.com/k0sproject/k0sctl v0.30.1
-	github.com/k0sproject/rig v0.21.9
+	github.com/k0sproject/rig v0.21.8
 	github.com/k0sproject/version v0.8.0
 	gopkg.in/yaml.v3 v3.0.1
 )
