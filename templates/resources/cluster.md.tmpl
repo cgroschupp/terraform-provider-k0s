@@ -1,0 +1,73 @@
+---
+page_title: "{{ .Name }} {{ .Type }} - {{ .ProviderName }}"
+subcategory: ""
+description: |-
+  {{ .Description | plainmarkdown }}
+---
+
+# {{ .Name }} ({{ .Type }})
+
+{{ .Description }}
+
+## Example Usage
+
+```terraform
+resource "k0s_cluster" "example" {
+  name    = "example"
+  version = "1.27.2+k0s.0"
+
+  hosts = [
+    {
+      role = "controller+worker"
+
+      ssh = {
+        address  = "10.0.0.1"
+        port     = 22
+        user     = "root"
+        key_path = "~/.ssh/id_ed25519.pub"
+      }
+    },
+    {
+      role = "worker"
+
+      ssh = {
+        address  = "10.0.0.2"
+        port     = 22
+        user     = "root"
+        key_path = "~/.ssh/id_ed25519.pub"
+      }
+    }
+  ]
+}
+```
+
+### With SSH bastion host
+
+```terraform
+resource "k0s_cluster" "example" {
+  name    = "example"
+  version = "1.27.2+k0s.0"
+
+  hosts = [
+    {
+      role = "controller+worker"
+
+      ssh = {
+        address  = "10.0.1.10"
+        port     = 22
+        user     = "root"
+        key_path = "~/.ssh/id_ed25519"
+
+        bastion = {
+          address  = "203.0.113.10"
+          port     = 22
+          user     = "ubuntu"
+          key_path = "~/.ssh/bastion_ed25519"
+        }
+      }
+    }
+  ]
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}
