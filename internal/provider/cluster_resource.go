@@ -64,6 +64,15 @@ type ClusterResourceModelFiles struct {
 }
 
 type ClusterResourceModelHostSSH struct {
+	Address types.String                        `tfsdk:"address"`
+	User    types.String                        `tfsdk:"user"`
+	Port    types.Int64                         `tfsdk:"port"`
+	KeyPath types.String                        `tfsdk:"key_path"`
+	Key     types.String                        `tfsdk:"key"`
+	Bastion *ClusterResourceModelHostSSHBastion `tfsdk:"bastion"`
+}
+
+type ClusterResourceModelHostSSHBastion struct {
 	Address types.String `tfsdk:"address"`
 	User    types.String `tfsdk:"user"`
 	Port    types.Int64  `tfsdk:"port"`
@@ -216,6 +225,43 @@ func (r *ClusterResource) Schema(ctx context.Context, req resource.SchemaRequest
 										stringvalidator.ConflictsWith(path.Expressions{
 											path.MatchRelative().AtParent().AtName("key_path"),
 										}...),
+									},
+								},
+								"bastion": schema.SingleNestedAttribute{
+									MarkdownDescription: "Optional SSH bastion host used to reach this host.",
+									Optional:            true,
+									Attributes: map[string]schema.Attribute{
+										"address": schema.StringAttribute{
+											MarkdownDescription: "IP address or hostname of the bastion host.",
+											Required:            true,
+										},
+										"user": schema.StringAttribute{
+											MarkdownDescription: "Username to log in as on the bastion host.",
+											Optional:            true,
+										},
+										"port": schema.Int64Attribute{
+											MarkdownDescription: "TCP port of the SSH service on the bastion host.",
+											Required:            true,
+										},
+										"key_path": schema.StringAttribute{
+											MarkdownDescription: "Path to an SSH private key file for the bastion host.",
+											Optional:            true,
+											Validators: []validator.String{
+												stringvalidator.ConflictsWith(path.Expressions{
+													path.MatchRelative().AtParent().AtName("key"),
+												}...),
+											},
+										},
+										"key": schema.StringAttribute{
+											MarkdownDescription: "SSH private key in PEM format for the bastion host.",
+											Optional:            true,
+											Sensitive:           true,
+											Validators: []validator.String{
+												stringvalidator.ConflictsWith(path.Expressions{
+													path.MatchRelative().AtParent().AtName("key_path"),
+												}...),
+											},
+										},
 									},
 								},
 							},
@@ -488,6 +534,25 @@ func getK0sctlManagerForCreateOrUpdate(data *ClusterResourceModel, k0sctlConfig 
 	return &manager
 }
 
+func buildSSHConfig(dia *diag.Diagnostics, address types.String, port types.Int64, user types.String, keyPath types.String, key types.String) *k0s_rig.SSH {
+	ssh := &k0s_rig.SSH{
+		Address: address.ValueString(),
+		Port:    int(port.ValueInt64()),
+		User:    user.ValueString(),
+		KeyPath: keyPath.ValueStringPointer(),
+	}
+	if !key.IsNull() {
+		authMethods, err := k0s_rig.ParseSSHPrivateKey([]byte(key.ValueString()), nil)
+		if err != nil {
+			dia.AddError("unable to parse ssh key", err.Error())
+			return ssh
+		}
+		ssh.AuthMethods = authMethods
+	}
+
+	return ssh
+}
+
 func getK0sctlConfig(ctx context.Context, dia *diag.Diagnostics, data *ClusterResourceModel) *k0sctl_v1beta1.Cluster {
 	k0sctlHosts := []*k0sctl_cluster.Host{}
 
@@ -522,23 +587,19 @@ func getK0sctlConfig(ctx context.Context, dia *diag.Diagnostics, data *ClusterRe
 			files = append(files, &u)
 		}
 
-		ssh := k0s_rig.SSH{
-			Address: host.SSH.Address.ValueString(),
-			Port:    int(host.SSH.Port.ValueInt64()),
-			User:    host.SSH.User.ValueString(),
-			KeyPath: host.SSH.KeyPath.ValueStringPointer(),
+		ssh := buildSSHConfig(dia, host.SSH.Address, host.SSH.Port, host.SSH.User, host.SSH.KeyPath, host.SSH.Key)
+		if dia.HasError() {
+			return nil
 		}
-		if !host.SSH.Key.IsNull() {
-			authMethods, err := k0s_rig.ParseSSHPrivateKey([]byte(host.SSH.Key.ValueString()), nil)
-			if err != nil {
-				dia.AddError("unable to parse ssh key", err.Error())
+		if host.SSH.Bastion != nil {
+			ssh.Bastion = buildSSHConfig(dia, host.SSH.Bastion.Address, host.SSH.Bastion.Port, host.SSH.Bastion.User, host.SSH.Bastion.KeyPath, host.SSH.Bastion.Key)
+			if dia.HasError() {
 				return nil
 			}
-			ssh.AuthMethods = authMethods
 		}
 		k0sctlHosts = append(k0sctlHosts, &k0sctl_cluster.Host{
 			Connection: k0s_rig.Connection{
-				SSH: &ssh,
+				SSH: ssh,
 			},
 			Role:             host.Role.ValueString(),
 			NoTaints:         host.NoTaints.ValueBool(),
