@@ -19,7 +19,8 @@ import (
 	k0sctl_phase "github.com/k0sproject/k0sctl/phase"
 	k0sctl_v1beta1 "github.com/k0sproject/k0sctl/pkg/apis/k0sctl.k0sproject.io/v1beta1"
 	k0sctl_cluster "github.com/k0sproject/k0sctl/pkg/apis/k0sctl.k0sproject.io/v1beta1/cluster"
-	k0s_rig "github.com/k0sproject/rig"
+	k0s_rig "github.com/k0sproject/rig/v2"
+	k0s_ssh "github.com/k0sproject/rig/v2/protocol/ssh"
 	"github.com/k0sproject/version"
 	"gopkg.in/yaml.v3"
 )
@@ -534,15 +535,15 @@ func getK0sctlManagerForCreateOrUpdate(data *ClusterResourceModel, k0sctlConfig 
 	return &manager
 }
 
-func buildSSHConfig(dia *diag.Diagnostics, address types.String, port types.Int64, user types.String, keyPath types.String, key types.String) *k0s_rig.SSH {
-	ssh := &k0s_rig.SSH{
+func buildSSHConfig(dia *diag.Diagnostics, address types.String, port types.Int64, user types.String, keyPath types.String, key types.String) *k0s_ssh.Config {
+	ssh := &k0s_ssh.Config{
 		Address: address.ValueString(),
 		Port:    int(port.ValueInt64()),
 		User:    user.ValueString(),
 		KeyPath: keyPath.ValueStringPointer(),
 	}
 	if !key.IsNull() {
-		authMethods, err := k0s_rig.ParseSSHPrivateKey([]byte(key.ValueString()), nil)
+		authMethods, err := k0s_ssh.ParseSSHPrivateKey([]byte(key.ValueString()), nil)
 		if err != nil {
 			dia.AddError("unable to parse ssh key", err.Error())
 			return ssh
@@ -598,7 +599,7 @@ func getK0sctlConfig(ctx context.Context, dia *diag.Diagnostics, data *ClusterRe
 			}
 		}
 		k0sctlHosts = append(k0sctlHosts, &k0sctl_cluster.Host{
-			Connection: k0s_rig.Connection{
+			CompositeConfig: k0s_rig.CompositeConfig{
 				SSH: ssh,
 			},
 			Role:             host.Role.ValueString(),

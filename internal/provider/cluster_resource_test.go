@@ -1,10 +1,68 @@
 package provider
 
 import (
+	"context"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
+func TestK0sctlConfigSSH(t *testing.T) {
+	for _, withBastion := range []bool{false, true} {
+		name := "direct"
+		if withBastion {
+			name = "bastion"
+		}
+		t.Run(name, func(t *testing.T) {
+			host := ClusterResourceModelHost{
+				Role: types.StringValue("controller+worker"),
+				SSH: ClusterResourceModelHostSSH{
+					Address: types.StringValue("10.0.1.10"),
+					Port:    types.Int64Value(22),
+					User:    types.StringValue("root"),
+					KeyPath: types.StringValue("~/.ssh/node"),
+					Key:     types.StringNull(),
+				},
+				InstallFlags: types.ListNull(types.StringType),
+				Environment:  types.MapNull(types.StringType),
+			}
+			if withBastion {
+				host.SSH.Bastion = &ClusterResourceModelHostSSHBastion{
+					Address: types.StringValue("bastion.example.com"),
+					Port:    types.Int64Value(2222),
+					User:    types.StringValue("ubuntu"),
+					KeyPath: types.StringValue("~/.ssh/bastion"),
+					Key:     types.StringNull(),
+				}
+			}
+			var diags diag.Diagnostics
+			config := getK0sctlConfig(context.Background(), &diags, &ClusterResourceModel{
+				Name:    types.StringValue("test"),
+				Version: types.StringValue("1.27.2+k0s.0"),
+				Hosts:   []ClusterResourceModelHost{host},
+			})
+			if diags.HasError() {
+				t.Fatalf("unexpected diagnostics: %v", diags)
+			}
+			ssh := config.Spec.Hosts[0].SSH
+			if ssh == nil || ssh.Address != "10.0.1.10" || ssh.Port != 22 || ssh.User != "root" || ssh.KeyPath == nil || *ssh.KeyPath != "~/.ssh/node" {
+				t.Fatalf("unexpected SSH configuration: %+v", ssh)
+			}
+			if !withBastion {
+				if ssh.Bastion != nil {
+					t.Fatal("unexpected bastion for direct connection")
+				}
+				return
+			}
+			bastion := ssh.Bastion
+			if bastion == nil || bastion.Address != "bastion.example.com" || bastion.Port != 2222 || bastion.User != "ubuntu" || bastion.KeyPath == nil || *bastion.KeyPath != "~/.ssh/bastion" {
+				t.Fatalf("unexpected bastion configuration: %+v", bastion)
+			}
+		})
+	}
+}
 
 func TestAccClusterResource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
