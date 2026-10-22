@@ -58,6 +58,7 @@ type ClusterResourceModelHost struct {
 type ClusterResourceModelFiles struct {
 	Name            types.String `tfsdk:"name"`
 	Source          types.String `tfsdk:"src"`
+	Content         types.String `tfsdk:"content"`
 	DestinationFile types.String `tfsdk:"dst"`
 	User            types.String `tfsdk:"user"`
 	Group           types.String `tfsdk:"group"`
@@ -171,8 +172,20 @@ func (r *ClusterResource) Schema(ctx context.Context, req resource.SchemaRequest
 										Required:            true,
 									},
 									"src": schema.StringAttribute{
-										MarkdownDescription: "File path to the file to upload",
-										Required:            true,
+										MarkdownDescription: "File path to the file to upload. Specify exactly one of `src` or `content`.",
+										Optional:            true,
+										Validators: []validator.String{
+											stringvalidator.LengthAtLeast(1),
+											stringvalidator.ExactlyOneOf(path.MatchRelative().AtParent().AtName("content")),
+										},
+									},
+									"content": schema.StringAttribute{
+										MarkdownDescription: "Inline file content. Specify exactly one of `src` or `content`. Stored in Terraform state despite being marked sensitive. Must not be empty.",
+										Optional:            true,
+										Sensitive:           true,
+										Validators: []validator.String{
+											stringvalidator.LengthAtLeast(1),
+										},
 									},
 									"dst": schema.StringAttribute{
 										MarkdownDescription: "Destination filename for the file",
@@ -582,8 +595,11 @@ func getK0sctlConfig(ctx context.Context, dia *diag.Diagnostics, data *ClusterRe
 				User:            file.User.ValueString(),
 				Group:           file.Group.ValueString(),
 				Source:          file.Source.ValueString(),
+				Data:            file.Content.ValueString(),
 				PermMode:        file.PermMode.ValueString(),
-				Sources:         []*k0sctl_cluster.LocalFile{{Path: file.Source.ValueString(), PermMode: file.PermMode.ValueString()}},
+			}
+			if !file.Source.IsNull() {
+				u.Sources = []*k0sctl_cluster.LocalFile{{Path: file.Source.ValueString(), PermMode: file.PermMode.ValueString()}}
 			}
 			files = append(files, &u)
 		}
