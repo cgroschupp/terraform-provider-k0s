@@ -27,6 +27,22 @@ func TestK0sctlConfigSSH(t *testing.T) {
 				},
 				InstallFlags: types.ListNull(types.StringType),
 				Environment:  types.MapNull(types.StringType),
+				Files: []ClusterResourceModelFiles{
+					{
+						Name:            types.StringValue("inline"),
+						Source:          types.StringNull(),
+						Content:         types.StringValue("first line\nsecond line\n"),
+						DestinationFile: types.StringValue("/etc/example.conf"),
+						PermMode:        types.StringValue("0600"),
+					},
+					{
+						Name:            types.StringValue("local"),
+						Source:          types.StringValue("example.conf"),
+						Content:         types.StringNull(),
+						DestinationFile: types.StringValue("/etc/local.conf"),
+						PermMode:        types.StringValue("0644"),
+					},
+				},
 			}
 			if withBastion {
 				host.SSH.Bastion = &ClusterResourceModelHostSSHBastion{
@@ -45,6 +61,19 @@ func TestK0sctlConfigSSH(t *testing.T) {
 			})
 			if diags.HasError() {
 				t.Fatalf("unexpected diagnostics: %v", diags)
+			}
+			files := config.Spec.Hosts[0].Files
+			if len(files) != 2 {
+				t.Fatalf("expected two upload files, got %d", len(files))
+			}
+			if files[0].Data != "first line\nsecond line\n" || files[0].Source != "" || len(files[0].Sources) != 0 || files[0].DestinationFile != "/etc/example.conf" || files[0].PermMode != "0600" {
+				t.Fatal("incorrect inline upload mapping")
+			}
+			if err := files[0].Validate(); err != nil {
+				t.Fatalf("invalid inline upload: %v", err)
+			}
+			if files[1].Data != "" || files[1].Source != "example.conf" || len(files[1].Sources) != 1 || files[1].Sources[0].Path != "example.conf" {
+				t.Fatal("incorrect local upload mapping")
 			}
 			ssh := config.Spec.Hosts[0].SSH
 			if ssh == nil || ssh.Address != "10.0.1.10" || ssh.Port != 22 || ssh.User != "root" || ssh.KeyPath == nil || *ssh.KeyPath != "~/.ssh/node" {

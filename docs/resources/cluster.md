@@ -150,12 +150,13 @@ Required:
 
 - `dst` (String) Destination filename for the file
 - `name` (String) name of the file bundle
-- `src` (String) File path to the file to upload
 
 Optional:
 
+- `content` (String, Sensitive) Inline file content. Specify exactly one of `src` or `content`. Stored in Terraform state despite being marked sensitive. Must not be empty.
 - `group` (String) Group name of file owner
 - `perm` (String) File permission mode for uploaded file
+- `src` (String) File path to the file to upload. Specify exactly one of `src` or `content`.
 - `user` (String) User name of file owner
 
 

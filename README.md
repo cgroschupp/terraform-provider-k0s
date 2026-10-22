@@ -8,6 +8,29 @@ Terraform provider to create and manage [k0s](https://k0sproject.io) Kubernetes 
 
 You can install stable releases of the provider from the [Terrafom registry](https://registry.terraform.io/providers/cgroschupp/k0s/latest).
 
+## Uploading inline files
+
+Each entry in `k0s_cluster.hosts[].files` accepts either `src` (a local file path)
+or `content` (inline text), but not both. For example, inside a host configuration:
+
+```hcl
+files = [
+  {
+    name    = "app-config"
+    dst     = "/etc/app.conf"
+    perm    = "0600"
+    content = <<-EOT
+      enabled=true
+      endpoint=https://example.com
+    EOT
+  }
+]
+```
+
+Inline content must not be empty. It is uploaded through k0sctl's file upload
+phase before k0s configuration and initialization. Although `content` is marked
+sensitive, its value is stored in Terraform state; protect state access accordingly.
+
 ## Contributing
 
 If you wish to work on the provider, you'll first need these requirements:
