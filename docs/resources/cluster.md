@@ -107,6 +107,7 @@ Optional:
 - `files` (Attributes List) List of files to be uploaded to the host. (see [below for nested schema](#nestedatt--hosts--files))
 - `hostname` (String) Override host's hostname. When not set, the hostname reported by the operating system is used.
 - `install_flags` (List of String) Extra flags passed to the `k0s install` command on the target host.
+- `k0s_download_url` (String) Override the download URL for the k0s binary on this host (k0sctl `k0sDownloadURL`). If omitted, k0sctl uses its default download source.
 - `no_taints` (Boolean) When `true` and used in conjuction with the `controller+worker` role, the default taints are disabled making regular workloads schedulable on the node. By default, k0s sets a `node-role.kubernetes.io/master:NoSchedule` taint on `controller+worker` nodes and only workloads with toleration for it will be scheduled.
 - `os` (String) Override OS distribution auto-detection.
 - `private_address` (String) Override private IP address selected by host fact gathering.
