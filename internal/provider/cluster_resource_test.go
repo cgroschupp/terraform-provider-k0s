@@ -44,7 +44,9 @@ func TestK0sctlConfigSSH(t *testing.T) {
 					},
 				},
 			}
+			host.K0sDownloadURL = types.StringNull()
 			if withBastion {
+				host.K0sDownloadURL = types.StringValue("https://downloads.example.com/k0s")
 				host.SSH.Bastion = &ClusterResourceModelHostSSHBastion{
 					Address: types.StringValue("bastion.example.com"),
 					Port:    types.Int64Value(2222),
@@ -61,6 +63,9 @@ func TestK0sctlConfigSSH(t *testing.T) {
 			})
 			if diags.HasError() {
 				t.Fatalf("unexpected diagnostics: %v", diags)
+			}
+			if got := config.Spec.Hosts[0].K0sDownloadURLOverride; got != host.K0sDownloadURL.ValueString() {
+				t.Fatalf("unexpected k0s download URL: %q", got)
 			}
 			files := config.Spec.Hosts[0].Files
 			if len(files) != 2 {

@@ -50,6 +50,7 @@ type ClusterResourceModelHost struct {
 	PrivateInterface types.String                `tfsdk:"private_interface"`
 	PrivateAddress   types.String                `tfsdk:"private_address"`
 	OS               types.String                `tfsdk:"os"`
+	K0sDownloadURL   types.String                `tfsdk:"k0s_download_url"`
 	InstallFlags     types.List                  `tfsdk:"install_flags"`
 	Environment      types.Map                   `tfsdk:"environment"`
 	Files            []ClusterResourceModelFiles `tfsdk:"files"`
@@ -150,6 +151,10 @@ func (r *ClusterResource) Schema(ctx context.Context, req resource.SchemaRequest
 						},
 						"os": schema.StringAttribute{
 							MarkdownDescription: "Override OS distribution auto-detection.",
+							Optional:            true,
+						},
+						"k0s_download_url": schema.StringAttribute{
+							MarkdownDescription: "Override the download URL for the k0s binary on this host (k0sctl `k0sDownloadURL`). If omitted, k0sctl uses its default download source.",
 							Optional:            true,
 						},
 						"install_flags": schema.ListAttribute{
@@ -618,15 +623,16 @@ func getK0sctlConfig(ctx context.Context, dia *diag.Diagnostics, data *ClusterRe
 			CompositeConfig: k0s_rig.CompositeConfig{
 				SSH: ssh,
 			},
-			Role:             host.Role.ValueString(),
-			NoTaints:         host.NoTaints.ValueBool(),
-			HostnameOverride: host.Hostname.ValueString(),
-			PrivateInterface: host.PrivateInterface.ValueString(),
-			PrivateAddress:   host.PrivateAddress.ValueString(),
-			OSIDOverride:     host.OS.ValueString(),
-			InstallFlags:     installFlags,
-			Environment:      environment,
-			Files:            files,
+			Role:                   host.Role.ValueString(),
+			NoTaints:               host.NoTaints.ValueBool(),
+			HostnameOverride:       host.Hostname.ValueString(),
+			PrivateInterface:       host.PrivateInterface.ValueString(),
+			PrivateAddress:         host.PrivateAddress.ValueString(),
+			OSIDOverride:           host.OS.ValueString(),
+			K0sDownloadURLOverride: host.K0sDownloadURL.ValueString(),
+			InstallFlags:           installFlags,
+			Environment:            environment,
+			Files:                  files,
 		})
 	}
 
