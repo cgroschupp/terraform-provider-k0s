@@ -537,6 +537,7 @@ func getK0sctlManagerForCreateOrUpdate(data *ClusterResourceModel, k0sctlConfig 
 		&k0sctl_phase.UpgradeWorkers{
 			NoDrain: data.NoDrain.ValueBool(),
 		},
+		&k0sctl_phase.Reinstall{},
 		&k0sctl_phase.ResetWorkers{
 			NoDrain: data.NoDrain.ValueBool(),
 		},
