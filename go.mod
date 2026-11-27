@@ -9,8 +9,8 @@ require (
 	github.com/hashicorp/terraform-plugin-go v0.31.0
 	github.com/hashicorp/terraform-plugin-testing v1.16.0
 	github.com/k0sproject/dig v0.4.0
-	github.com/k0sproject/k0sctl v0.33.1
-	github.com/k0sproject/rig/v2 v2.4.0
+	github.com/k0sproject/k0sctl v0.34.0
+	github.com/k0sproject/rig/v2 v2.4.1
 	github.com/k0sproject/version v0.8.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -31,7 +31,7 @@ require (
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
-	github.com/bmatcuk/doublestar/v4 v4.10.0 // indirect
+	github.com/bmatcuk/doublestar/v4 v4.10.7 // indirect
 	github.com/bodgit/ntlmssp v0.0.0-20240506230425-31973bb52d9b // indirect
 	github.com/bodgit/windows v1.0.1 // indirect
 	github.com/carlmjohnson/versioninfo v0.22.5 // indirect
@@ -102,7 +102,7 @@ require (
 	github.com/samber/lo v1.53.0 // indirect
 	github.com/samber/slog-common v0.22.0 // indirect
 	github.com/samber/slog-logrus/v2 v2.5.4 // indirect
-	github.com/sergi/go-diff v1.4.0 // indirect
+	github.com/sergi/go-diff v1.4.5 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/sirupsen/logrus v1.10.2 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
@@ -135,8 +135,8 @@ require (
 	google.golang.org/protobuf v1.36.12-0.20260120151049-f2248ac996af // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	k8s.io/apimachinery v0.37.0 // indirect
-	k8s.io/client-go v0.37.0 // indirect
+	k8s.io/apimachinery v0.37.2 // indirect
+	k8s.io/client-go v0.37.2 // indirect
 	k8s.io/klog/v2 v2.140.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20260721132016-d427ff9ee9ad // indirect
 	k8s.io/utils v0.0.0-20260626114624-be93311217bd // indirect
